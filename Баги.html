@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Голосовой помощник Кайрат | Сезімдік көмекші</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .settings-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .settings-icon:hover {
+            transform: rotate(45deg);
+        }
+
+        .language-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lang-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: #4a90e2;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .status {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Главное меню */
+        .main-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .menu-item h2 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .menu-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Стили для игр */
+        .game-section {
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: #e74c3c;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Общие элементы игр */
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .number {
+            height: 140px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 3rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .number:hover {
+            transform: scale(1.05);
+        }
+
+        .number-1 {
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+        }
+
+        .number-2 {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+        }
+
+        .number-3 {
+            background: linear-gradient(135deg, #2196F3, #21CBF3);
+        }
+
+        .number-4 {
+            background: linear-gradient(135deg, #FFC107, #FF9800);
+        }
+
+        .number-5 {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+        }
+
+        .number-6 {
+            background: linear-gradient(135deg, #795548, #607D8B);
+        }
+
+        .round-info {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Математический помощник */
+        .math-problem {
+            font-size: 2rem;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .math-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Игра "Угадай число" */
+        .guess-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .guess-feedback {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        /* Игра на моторику */
+        .motor-game-container {
+            position: relative;
+            height: 400px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .target {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ff5e62, #b21f1f);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 94, 98, 0.7);
+            transition: transform 0.2s;
+        }
+
+        .target:hover {
+            transform: scale(1.1);
+        }
+
+        .motor-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .motor-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Настройки */
+        .settings-section {
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .settings-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-group h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .voice-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .slider-container {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            border-radius: 5px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4a90e2;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 30px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #4a90e2;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Результаты */
+        .results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .results h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .mood-result, .job-result {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        /* Элементы управления */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4a90e2;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #357ae8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .voice-btn {
+            background: #e74c3c;
+        }
+
+        .voice-btn:hover {
+            background: #c0392b;
+        }
+
+        .mute-btn {
+            background: #9b59b6;
+        }
+
+        .mute-btn:hover {
+            background: #8e44ad;
+        }
+
+        .listening .voice-btn {
+            animation: pulse 1.5s infinite;
+            background: #27ae60;
+        }
+
+        /* Анимации */
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Новые стили для улучшений */
+        /* Шестеренка настроек */
+        .settings-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Выбор сложности */
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .difficulty-btn {
+            padding: 10px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn.active {
+            background: #4a90e2;
+            border-color: #4a90e2;
+        }
+
+        /* Таблица рекордов */
+        .leaderboard {
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .leaderboard h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Игра по профессиям */
+        .profession-game {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: left;
+            font-family: monospace;
+            min-height: 150px;
+        }
+
+        .code-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .code-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .code-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Игра дизайнера */
+        .designer-game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .color-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-box:hover {
+            transform: scale(1.1);
+        }
+
+        .design-container {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            padding: 15px;
+            gap: 10px;
+        }
+
+        .design-element {
+            padding: 10px;
+            border-radius: 5px;
+            cursor: move;
+            user-select: none;
+        }
+
+        /* Игра инженера */
+        .engineer-game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .engineer-parts {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .engineer-part {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .engineer-part:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .engineer-canvas {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .constructed-item {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Подсказки */
+        .hints-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .hint-btn {
+            padding: 10px 15px;
+            background: #9b59b6;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .hint-btn:disabled {
+            background: #7d3c98;
+            cursor: not-allowed;
+        }
+
+        /* Камера и распознавание лиц */
+        .camera-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        #video {
+            width: 100%;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .face-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        /* Микрофон */
+        .permission-granted {
+            background: #27ae60 !important;
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .main-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .game-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .number {
+                height: 120px;
+                font-size: 2.5rem;
+            }
+
+            .motor-game-container {
+                height: 300px;
+            }
+
+            .motor-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .back-btn {
+                align-self: flex-end;
+            }
+
+            .difficulty-selector {
+                flex-direction: column;
+            }
+
+            .code-options {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+                padding: 0 40px;
+            }
+
+            .settings-icon {
+                top: 15px;
+                right: 15px;
+            }
+
+            .color-palette {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .engineer-parts {
+                gap: 10px;
+            }
+
+            .engineer-part {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            header {
+                padding: 15px;
+            }
+
+            .menu-item {
+                padding: 20px;
+            }
+
+            .menu-item h2 {
+                font-size: 1.5rem;
+            }
+
+            .math-problem {
+                font-size: 1.5rem;
+            }
+
+            .number {
+                height: 100px;
+                font-size: 2rem;
+            }
+
+            .motor-game-container {
+                height: 250px;
+            }
+
+            .engineer-part {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="language-switcher">
+                <button id="lang-ru" class="lang-btn active">Русский</button>
+                <button id="lang-kk" class="lang-btn">Қазақша</button>
+            </div>
+            <i class="fas fa-cog settings-icon" id="settings-icon"></i>
+            <h1 id="main-title">Голосовой помощник Кайрат</h1>
+            <div class="status" id="status">Скажите "Кайрат" для активации</div>
+            <div class="controls">
+                <button id="voice-btn" class="voice-btn">Активировать голосовое управление</button>
+                <button id="mute-btn" class="mute-btn">Выключить звук</button>
+                <button id="camera-btn" class="mute-btn">Включить камеру</button>
+            </div>
+        </header>
+
+        <!-- Секция камеры -->
+        <div class="camera-section hidden" id="camera-section">
+            <h2>Распознавание лиц</h2>
+            <div class="camera-container">
+                <video id="video" width="640" height="480" autoplay muted></video>
+                <canvas id="canvas" width="640" height="480"></canvas>
+            </div>
+            <div class="face-info" id="face-info">
+                Камера не активна. Нажмите "Включить камеру" для начала распознавания.
+            </div>
+        </div>
+
+        <!-- Главное меню -->
+        <div class="main-menu" id="main-menu">
+            <div class="menu-item" data-game="future">
+                <h2 id="game1-title">Определи свое будущее</h2>
+                <p id="game1-desc">Узнайте свое настроение и рекомендуемую профессию</p>
+            </div>
+            <div class="menu-item" data-game="math">
+                <h2 id="game2-title">Математический помощник</h2>
+                <p id="game2-desc">Решите математические задачи с помощью Кайрата</p>
+            </div>
+            <div class="menu-item" data-game="guess">
+                <h2 id="game3-title">Угадай число</h2>
+                <p id="game3-desc">Попробуйте угадать число от 1 до 100 с подсказками Кайрата</p>
+            </div>
+            <div class="menu-item" data-game="motor">
+                <h2 id="game4-title">Развитие моторики</h2>
+                <p id="game4-desc">Тренируйте скорость реакции и моторику</p>
+            </div>
+            <div class="menu-item" data-game="profession">
+                <h2 id="game5-title">Игра по профессиям</h2>
+                <p id="game5-desc">Попробуйте себя в разных профессиях</p>
+            </div>
+        </div>
+
+        <!-- Игра 1: Определи свое будущее -->
+        <div class="game-section" id="game-future">
+            <div class="game-header">
+                <h2 id="future-title">Определи свое будущее</h2>
+                <button class="back-btn" id="back-from-future">Назад в меню</button>
+            </div>
+            <div class="round-info" id="round-info">Раунд 1 из 6</div>
+            <div class="game-container">
+                <div class="number number-1" data-number="1">1</div>
+                <div class="number number-1" data-number="2">2</div>
+                <div class="number number-1" data-number="3">3</div>
+            </div>
+            <div class="results hidden" id="future-results">
+                <h2 id="results-title">Результаты анализа</h2>
+                <div class="mood-result" id="mood-result">Ваше настроение: определяется...</div>
+                <div class="job-result" id="job-result">Рекомендуемая работа: определяется...</div>
+                <div class="controls">
+                    <button id="try-profession">Попробовать профессию</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Игра 2: Математический помощник -->
+        <div class="game-section" id="game-math">
+            <div class="game-header">
+                <h2 id="math-title">Математический помощник</h2>
+                <button class="back-btn" id="back-from-math">Назад в меню</button>
+            </div>
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" data-difficulty="easy">Легкий</button>
+                <button class="difficulty-btn" data-difficulty="medium">Средний</button>
+                <button class="difficulty-btn" data-difficulty="hard">Сложный</button>
+            </div>
+            <div class="math-problem" id="math-problem">5 + 3 = ?</div>
+            <input type="number" class="math-input" id="math-answer" placeholder="Введите ответ">
+            <div class="controls">
+                <button id="check-math">Проверить ответ</button>
+                <button id="voice-math">Ответить голосом</button>
+                <button id="new-math">Новая задача</button>
+            </div>
+            <div class="results hidden" id="math-results">
+                <h2>Результат</h2>
+                <div class="mood-result" id="math-result">Ожидание ответа...</div>
+            </div>
+            <div class="leaderboard hidden" id="math-leaderboard">
+                <h3>Таблица рекордов</h3>
+                <div id="math-scores"></div>
+            </div>
+        </div>
+
+        <!-- Игра 3: Угадай число -->
+        <div class="game-section" id="game-guess">
+            <div class="game-header">
+                <h2 id="guess-title">Угадай число</h2>
+                <button class="back-btn" id="back-from-guess">Назад в меню</button>
+            </div>
+            <div class="guess-feedback" id="guess-feedback">
+                Я загадал число от 1 до 100. Попробуй угадать!
+            </div>
+            <input type="number" class="guess-input" id="guess-input" placeholder="Введите число от 1 до 100">
+            <div class="controls">
+                <button id="check-guess">Проверить</button>
+                <button id="voice-guess">Сказать число</button>
+                <button id="new-game">Новая игра</button>
+            </div>
+        </div>
+
+        <!-- Игра 4: Развитие моторики -->
+        <div class="game-section" id="game-motor">
+            <div class="game-header">
+                <h2 id="motor-title">Развитие моторики</h2>
+                <button class="back-btn" id="back-from-motor">Назад в меню</button>
+            </div>
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" data-difficulty="easy">Легкий</button>
+                <button class="difficulty-btn" data-difficulty="medium">Средний</button>
+                <button class="difficulty-btn" data-difficulty="hard">Сложный</button>
+            </div>
+            <div class="motor-controls">
+                <div class="motor-stats">
+                    <div class="stat" id="score">Очки: 0</div>
+                    <div class="stat" id="time">Время: 30</div>
+                    <div class="stat" id="targets">Цели: 0</div>
+                </div>
+                <button id="start-motor">Начать игру</button>
+            </div>
+            <div class="motor-game-container" id="motor-game-container"></div>
+            <div class="results hidden" id="motor-results">
+                <h2>Результаты игры</h2>
+                <div class="mood-result" id="final-score">Набрано очков: 0</div>
+                <div class="job-result" id="accuracy">Точность: 0%</div>
+            </div>
+            <div class="leaderboard hidden" id="motor-leaderboard">
+                <h3>Таблица рекордов</h3>
+                <div id="motor-scores"></div>
+            </div>
+        </div>
+
+        <!-- Игра 5: Профессии -->
+        <div class="game-section" id="game-profession">
+            <div class="game-header">
+                <h2 id="profession-title">Игра по профессиям</h2>
+                <button class="back-btn" id="back-from-profession">Назад в меню</button>
+            </div>
+            <div class="profession-game">
+                <div id="profession-description">
+                    <p>Выберите профессию, чтобы попробовать себя в ней!</p>
+                </div>
+                <div class="game-container">
+                    <div class="menu-item" data-profession="programmer">
+                        <h3>Программист</h3>
+                        <p>Собери правильный код</p>
+                    </div>
+                    <div class="menu-item" data-profession="engineer">
+                        <h3>Инженер</h3>
+                        <p>Собери механизм</p>
+                    </div>
+                    <div class="menu-item" data-profession="designer">
+                        <h3>Дизайнер</h3>
+                        <p>Создай красивый дизайн</p>
+                    </div>
+                </div>
+                
+                <!-- Игра программиста -->
+                <div id="programmer-game" class="hidden">
+                    <div class="game-header">
+                        <h2>Игра программиста</h2>
+                        <button class="back-btn" id="back-from-programmer">Назад к профессиям</button>
+                    </div>
+                    <div class="code-block" id="code-block">
+                        // Ваш код появится здесь
+                    </div>
+                    <div class="hints-container">
+                        <button class="hint-btn" id="hint-1">Подсказка 1</button>
+                        <button class="hint-btn" id="hint-2">Подсказка 2</button>
+                        <button class="hint-btn" id="hint-3">Подсказка 3</button>
+                    </div>
+                    <div class="code-options" id="code-options">
+                        <div class="code-option" data-option="1">console.log("Hello World");</div>
+                        <div class="code-option" data-option="2">function test() { return true; }</div>
+                        <div class="code-option" data-option="3">for (let i = 0; i < 5; i++) { }</div>
+                        <div class="code-option" data-option="4">if (x > 10) { return; }</div>
+                    </div>
+                    <div class="controls">
+                        <button id="check-code">Проверить</button>
+                        <button id="reset-code">Сбросить</button>
+                    </div>
+                    <div class="results hidden" id="programmer-results">
+                        <h2>Результаты игры</h2>
+                        <div class="mood-result" id="programmer-score">Ваш результат: 0%</div>
+                        <div class="job-result" id="programmer-feedback">Ожидание оценки...</div>
+                    </div>
+                </div>
+                
+                <!-- Игра инженера -->
+                <div id="engineer-game" class="hidden">
+                    <div class="game-header">
+                        <h2>Игра инженера</h2>
+                        <button class="back-btn" id="back-from-engineer">Назад к профессиям</button>
+                    </div>
+                    <div class="engineer-game">
+                        <div id="engineer-description">
+                            <h3>Собери механизм из деталей</h3>
+                            <p>Перетащите детали на рабочую область и соберите механизм</p>
+                        </div>
+                        <div class="engineer-parts" id="engineer-parts">
+                            <div class="engineer-part" data-part="gear">⚙️</div>
+                            <div class="engineer-part" data-part="spring">🦽</div>
+                            <div class="engineer-part" data-part="wheel">🛞</div>
+                            <div class="engineer-part" data-part="lever">🎚️</div>
+                            <div class="engineer-part" data-part="piston">🔩</div>
+                        </div>
+                        <div class="engineer-canvas" id="engineer-canvas"></div>
+                        <div class="controls">
+                            <button id="check-construction">Проверить конструкцию</button>
+                            <button id="reset-construction">Сбросить</button>
+                        </div>
+                        <div class="results hidden" id="engineer-results">
+                            <h2>Результаты игры</h2>
+                            <div class="mood-result" id="engineer-score">Ваш результат: 0%</div>
+                            <div class="job-result" id="engineer-feedback">Ожидание оценки...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Игра дизайнера -->
+                <div id="designer-game" class="hidden">
+                    <div class="game-header">
+                        <h2>Игра дизайнера</h2>
+                        <button class="back-btn" id="back-from-designer">Назад к профессиям</button>
+                    </div>
+                    <div class="designer-game">
+                        <div id="designer-description">
+                            <h3>Создайте цветовую палитру</h3>
+                            <p>Выберите цвета и создайте гармоничную палитру</p>
+                        </div>
+                        <div class="color-palette" id="color-palette">
+                            <div class="color-box" style="background: #ff5e62;" data-color="#ff5e62"></div>
+                            <div class="color-box" style="background: #4CAF50;" data-color="#4CAF50"></div>
+                            <div class="color-box" style="background: #2196F3;" data-color="#2196F3"></div>
+                            <div class="color-box" style="background: #FFC107;" data-color="#FFC107"></div>
+                            <div class="color-box" style="background: #9C27B0;" data-color="#9C27B0"></div>
+                        </div>
+                        <div class="design-container" id="design-container">
+                            <div class="design-element" style="background: rgba(255,255,255,0.2);">Текст</div>
+                            <div class="design-element" style="background: rgba(255,255,255,0.2);">Кнопка</div>
+                            <div class="design-element" style="background: rgba(255,255,255,0.2);">Фон</div>
+                        </div>
+                        <div class="controls">
+                            <button id="check-design">Проверить дизайн</button>
+                            <button id="reset-design">Сбросить</button>
+                        </div>
+                        <div class="results hidden" id="designer-results">
+                            <h2>Результаты игры</h2>
+                            <div class="mood-result" id="designer-score">Ваш результат: 0%</div>
+                            <div class="job-result" id="designer-feedback">Ожидание оценки...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Настройки -->
+        <div class="settings-section" id="settings-section">
+            <div class="settings-header">
+                <h2 id="settings-title">Настройки голоса</h2>
+                <button class="back-btn" id="back-from-settings">Назад в меню</button>
+            </div>
+            <div class="settings-group">
+                <h3>Выбор голоса</h3>
+                <select id="voice-select" class="voice-select">
+                    <option value="">По умолчанию</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <h3>Скорость речи</h3>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Медленно</span>
+                        <span id="speed-value">1.0</span>
+                        <span>Быстро</span>
+                    </div>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="speed-slider">
+                </div>
+            </div>
+            <div class="settings-group">
+                <h3>Высота тона</h3>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Низкий</span>
+                        <span id="pitch-value">1.0</span>
+                        <span>Высокий</span>
+                    </div>
+                    <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="pitch-slider">
+                </div>
+            </div>
+            <div class="settings-group">
+                <h3>Громкость</h3>
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Тихий</span>
+                        <span id="volume-value">1.0</span>
+                        <span>Громкий</span>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.1" value="1" class="slider" id="volume-slider">
+                </div>
+            </div>
+            <div class="settings-group">
+                <h3>Другие настройки</h3>
+                <div class="slider-container" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span>Непрерывное распознавание</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="continuous-recognition" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключаем библиотеку для распознавания лиц -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Элементы DOM
+            const statusDiv = document.getElementById('status');
+            const mainMenu = document.getElementById('main-menu');
+            const gameFuture = document.getElementById('game-future');
+            const gameMath = document.getElementById('game-math');
+            const gameGuess = document.getElementById('game-guess');
+            const gameMotor = document.getElementById('game-motor');
+            const gameProfession = document.getElementById('game-profession');
+            const settingsSection = document.getElementById('settings-section');
+            const voiceBtn = document.getElementById('voice-btn');
+            const muteBtn = document.getElementById('mute-btn');
+            const cameraBtn = document.getElementById('camera-btn');
+            const cameraSection = document.getElementById('camera-section');
+            const langRuBtn = document.getElementById('lang-ru');
+            const langKkBtn = document.getElementById('lang-kk');
+            const mainTitle = document.getElementById('main-title');
+            const settingsIcon = document.getElementById('settings-icon');
+
+            // Элементы для работы с камерой
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const faceInfo = document.getElementById('face-info');
+            const ctx = canvas.getContext('2d');
+
+            // Кнопки возврата
+            const backFromFuture = document.getElementById('back-from-future');
+            const backFromMath = document.getElementById('back-from-math');
+            const backFromGuess = document.getElementById('back-from-guess');
+            const backFromMotor = document.getElementById('back-from-motor');
+            const backFromProfession = document.getElementById('back-from-profession');
+            const backFromSettings = document.getElementById('back-from-settings');
+            const backFromProgrammer = document.getElementById('back-from-programmer');
+            const backFromEngineer = document.getElementById('back-from-engineer');
+            const backFromDesigner = document.getElementById('back-from-designer');
+
+            // Элементы меню
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            // Элементы настроек
+            const voiceSelect = document.getElementById('voice-select');
+            const speedSlider = document.getElementById('speed-slider');
+            const pitchSlider = document.getElementById('pitch-slider');
+            const volumeSlider = document.getElementById('volume-slider');
+            const speedValue = document.getElementById('speed-value');
+            const pitchValue = document.getElementById('pitch-value');
+            const volumeValue = document.getElementById('volume-value');
+            const continuousRecognition = document.getElementById('continuous-recognition');
+
+            // Элементы игры на моторику
+            const motorGameContainer = document.getElementById('motor-game-container');
+            const startMotorBtn = document.getElementById('start-motor');
+            const scoreElement = document.getElementById('score');
+            const timeElement = document.getElementById('time');
+            const targetsElement = document.getElementById('targets');
+            const motorResults = document.getElementById('motor-results');
+            const finalScoreElement = document.getElementById('final-score');
+            const accuracyElement = document.getElementById('accuracy');
+            const motorLeaderboard = document.getElementById('motor-leaderboard');
+            const motorScores = document.getElementById('motor-scores');
+
+            // Элементы математического помощника
+            const mathLeaderboard = document.getElementById('math-leaderboard');
+            const mathScores = document.getElementById('math-scores');
+
+            // Элементы игры по профессиям
+            const professionGameContainer = document.getElementById('profession-game-container');
+            const programmerGame = document.getElementById('programmer-game');
+            const engineerGame = document.getElementById('engineer-game');
+            const designerGame = document.getElementById('designer-game');
+            const codeBlock = document.getElementById('code-block');
+            const codeOptions = document.getElementById('code-options');
+            const checkCodeBtn = document.getElementById('check-code');
+            const resetCodeBtn = document.getElementById('reset-code');
+            const tryProfessionBtn = document.getElementById('try-profession');
+            const hintButtons = [
+                document.getElementById('hint-1'),
+                document.getElementById('hint-2'),
+                document.getElementById('hint-3')
+            ];
+
+            // Элементы результатов мини-игр
+            const programmerResults = document.getElementById('programmer-results');
+            const programmerScore = document.getElementById('programmer-score');
+            const programmerFeedback = document.getElementById('programmer-feedback');
+            const engineerResults = document.getElementById('engineer-results');
+            const engineerScore = document.getElementById('engineer-score');
+            const engineerFeedback = document.getElementById('engineer-feedback');
+            const designerResults = document.getElementById('designer-results');
+            const designerScore = document.getElementById('designer-score');
+            const designerFeedback = document.getElementById('designer-feedback');
+
+            // Переменные состояния
+            let recognition;
+            let synthesis;
+            let currentLanguage = 'ru';
+            let isActivated = false;
+            let isListening = false;
+            let currentGame = null;
+            let isMuted = false;
+            let microphonePermissionGranted = false;
+            let cameraActive = false;
+            let faceDetectionInterval;
+
+            // Переменные для игр
+            let futureNumbers = [];
+            let currentRound = 1;
+            let mathAnswer = 0;
+            let mathDifficulty = 'easy';
+            let mathScore = 0;
+            let guessNumber = 0;
+            let guessAttempts = 0;
+
+            // Переменные для игры на моторику
+            let motorScore = 0;
+            let motorTargets = 0;
+            let motorTime = 30;
+            let motorDifficulty = 'easy';
+            let motorTimer;
+            let targetsClicked = 0;
+
+            // Переменные для игры по профессиям
+            let currentProfession = null;
+            let codePieces = [];
+            let correctCode = [];
+            let hintsUsed = 0;
+            let maxHints = 3;
+            let professionScores = {
+                'programmer': 0,
+                'engineer': 0,
+                'designer': 0
+            };
+
+            // Переменные для распознавания лиц
+            let faceDetectionOptions;
+            let lastFaceDetection = 0;
+            let faceDetectionCooldown = 1000; // 1 секунда между обнаружениями
+
+            // Цвета для раундов игры "Будущее"
+            const roundColors = ['number-1', 'number-2', 'number-3', 'number-4', 'number-5', 'number-6'];
+
+            // Локализация
+            const translations = {
+                ru: {
+                    mainTitle: "Голосовой помощник Кайрат",
+                    statusWaiting: "Скажите 'Кайрат' для активации",
+                    statusListening: "Слушаю...",
+                    statusProcessing: "Обрабатываю...",
+                    statusActivated: "Активирован. Говорите команды",
+                    activateVoice: "Активировать голосовое управление",
+                    mute: "Выключить звук",
+                    unmute: "Включить звук",
+                    activateCamera: "Включить камеру",
+                    deactivateCamera: "Выключить камеру",
+                    activationMessage: "Привет! Я Кайрат, ваш голосовой помощник. Чем могу помочь?",
+                    deactivationMessage: "До свидания! Возвращайтесь soon.",
+
+                    // Меню
+                    game1Title: "Определи свое будущее",
+                    game1Desc: "Узнайте свое настроение и рекомендуемую профессию",
+                    game2Title: "Математический помощник",
+                    game2Desc: "Решите математические задачи с помощью Кайрата",
+                    game3Title: "Угадай число",
+                    game3Desc: "Попробуйте угадать число от 1 до 100 с подсказками Кайрата",
+                    game4Title: "Развитие моторики",
+                    game4Desc: "Тренируйте скорость реакции и моторику",
+                    game5Title: "Игра по профессиям",
+                    game5Desc: "Попробуйте себя в разных профессиях",
+                    settingsMenuTitle: "Настройки",
+                    settingsMenuDesc: "Настройте голос и параметры помощника",
+
+                    // Общие
+                    backToMenu: "Назад в меню",
+                    backToProfessions: "Назад к профессиям",
+
+                    // Будущее
+                    futureTitle: "Определи свое будущее",
+                    roundInfo: "Раунд {round} из 6",
+                    resultsTitle: "Результаты анализа",
+                    moodResult: "Ваше настроение: {mood}",
+                    jobResult: "Рекомендуемая работа: {job}",
+                    tryProfession: "Попробовать профессию",
+
+                    // Математика
+                    mathTitle: "Математический помощник",
+                    checkAnswer: "Проверить ответ",
+                    voiceAnswer: "Ответить голосом",
+                    newProblem: "Новая задача",
+
+                    // Угадай число
+                    guessTitle: "Угадай число",
+                    guessFeedback: "Я загадал число от 1 до 100. Попробуй угадать!",
+                    guessHigher: "Загаданное число больше. Попробуй еще раз!",
+                    guessLower: "Загаданное число меньше. Попробуй еще раз!",
+                    guessSuccess: "Поздравляю! Ты угадал число {number} с {attempts} попытки!",
+                    newGame: "Новая игры",
+                    check: "Проверить",
+                    sayNumber: "Сказать число",
+
+                    // Моторика
+                    motorTitle: "Развитие моторики",
+                    startGame: "Начать игру",
+                    score: "Очки: {score}",
+                    time: "Время: {time}",
+                    targets: "Цели: {targets}",
+                    finalScore: "Набрано очков: {score}",
+                    accuracy: "Точность: {accuracy}%",
+
+                    // Профессии
+                    professionTitle: "Игра по профессиям",
+                    programmer: "Программист",
+                    engineer: "Инженер",
+                    designer: "Дизайнер",
+                    chooseProfession: "Выберите профессию, чтобы попробовать себя в ней!",
+
+                    // Настройки
+                    settingsTitle: "Настройки голоса",
+                    voiceSelection: "Выбор голоса",
+                    speechRate: "Скорость речи",
+                    pitch: "Высота тона",
+                    volume: "Громкость",
+                    continuousRecognition: "Непрерывное распознавание",
+                    slow: "Медленно",
+                    fast: "Быстро",
+                    low: "Низкий",
+                    high: "Высокий",
+                    quiet: "Тихий",
+                    loud: "Громкий",
+
+                    // Подсказки
+                    hint: "Подсказка {number}",
+                    hintMessage: "Следующий шаг: {step}",
+                    noHints: "Подсказки закончились",
+                    
+                    // Результаты
+                    success: "Успех!",
+                    failure: "Попробуйте еще раз!",
+                    professionResult: "Исходя из того, что вы прошли все игры на определение вашей профессии, вам однозначно стоит попробовать себя в профессии {profession}. Мы уверены на {percentage}%, что она вам подойдет.",
+
+                    // Распознавание лиц
+                    faceDetected: "Обнаружено лицо! Приветствую, пользователь!",
+                    noFaceDetected: "Лицо не обнаружено. Пожалуйста, настройте камеру.",
+                    cameraActive: "Камера активна. Идет распознавание...",
+                    cameraInactive: "Камера не активна."
+                },
+                kk: {
+                    mainTitle: "Дауыстық көмекші Қайрат",
+                    statusWaiting: "Белсендіру үшін 'Қайрат' деп айтыңыз",
+                    statusListening: "Тыңдауда...",
+                    statusProcessing: "Өңдеуде...",
+                    statusActivated: "Белсендірілді. Пәрмендерді айтыңыз",
+                    activateVoice: "Дауыстық басқаруды белсендіру",
+                    mute: "Дыбысты өшіру",
+                    unmute: "Дыбысты қосу",
+                    activateCamera: "Камераны қосу",
+                    deactivateCamera: "Камераны өшіру",
+                    activationMessage: "Сәлем! Мен Қайрат, сіздің дауыстық көмекшіңіз. Қалай көмектесе аламын?",
+                    deactivationMessage: "Сау болыңыз! Жуықта көрісеміз.",
+
+                    // Меню
+                    game1Title: "Болашағынды анықта",
+                    game1Desc: "Көңіл-күйіңізді және ұсынылатын кәсібіңізді біліңіз",
+                    game2Title: "Математикалық көмекші",
+                    game2Desc: "Қайраттың көмегімен математикалық есептерді шешіңіз",
+                    game3Title: "Санды тап",
+                    game3Desc: "Қайраттың көрсетулерімен 1-ден 100-ге дейінгі санды табуға тырысыңыз",
+                    game4Title: "Моториканы дамыту",
+                    game4Desc: "Реакция жылдамдығы мен моториканы жаттықтырыңыз",
+                    game5Title: "Кәсіптер ойыны",
+                    game5Desc: "Өзіңізді әртүрлі кәсіптерде сынап көріңіз",
+                    settingsMenuTitle: "Баптаулар",
+                    settingsMenuDesc: "Көмекшінің дауысын және параметрлерін баптаңыз",
+
+                    // Общие
+                    backToMenu: "Мәзірге оралу",
+                    backToProfessions: "Кәсіптерге оралу",
+
+                    // Будущее
+                    futureTitle: "Болашағынды анықта",
+                    roundInfo: "Раунд {round} 6-тан",
+                    resultsTitle: "Талдау нәтижелері",
+                    moodResult: "Сіздің көңіл-күйіңіз: {mood}",
+                    jobResult: "Ұсынылатын жұмыс: {job}",
+                    tryProfession: "Кәсіпті сынап көріңіз",
+
+                    // Математика
+                    mathTitle: "Математикалық көмекші",
+                    checkAnswer: "Жауапты тексеру",
+                    voiceAnswer: "Дауыспен жауап беру",
+                    newProblem: "Жаңа есеп",
+
+                    // Угадай число
+                    guessTitle: "Санды тап",
+                    guessFeedback: "Мен 1-ден 100-ге дейін сан ойладым. Оны тапқың келсе!",
+                    guessHigher: "Ойлаған саным үлкенірек. Тағы байқап көр!",
+                    guessLower: "Ойлаған саным кішірек. Тағы байқап көр!",
+                    guessSuccess: "Құттықтаймын! Сен {number} санын {attempts} рет байқап таптың!",
+                    newGame: "Жаңа ойын",
+                    check: "Тексеру",
+                    sayNumber: "Санды айту",
+
+                    // Моторика
+                    motorTitle: "Моториканы дамыту",
+                    startGame: "Ойынды бастау",
+                    score: "Ұпай: {score}",
+                    time: "Уақыт: {time}",
+                    targets: "Нысандар: {targets}",
+                    finalScore: "Жиналған ұпай: {score}",
+                    accuracy: "Дәлдік: {accuracy}%",
+
+                    // Профессии
+                    professionTitle: "Кәсіптер ойыны",
+                    programmer: "Программист",
+                    engineer: "Инженер",
+                    designer: "Дизайнер",
+                    chooseProfession: "Өзіңізді сынап көру үшін кәсіп таңдаңыз!",
+
+                    // Настройки
+                    settingsTitle: "Дауыс баптаулары",
+                    voiceSelection: "Дауыс таңдау",
+                    speechRate: "Сөйлеу жылмадығы",
+                    pitch: "Үн биіктіği",
+                    volume: "Қаттылық",
+                    continuousRecognition: "Үздіксіз тану",
+                    slow: "Баяу",
+                    fast: "Жылдам",
+                    low: "Төмен",
+                    high: "Жоғары",
+                    quiet: "Қатынды",
+                    loud: "Қатты",
+
+                    // Подсказки
+                    hint: "Көрсету {number}",
+                    hintMessage: "Келесі қадам: {step}",
+                    noHints: "Көрсетулер аяқталды",
+                    
+                    // Результаты
+                    success: "Табыс!",
+                    failure: "Тағы байқап көріңіз!",
+                    professionResult: "Сіздің кәсіпті анықтау ойындарын өткеніңізге байланысты, сізге {profession} кәсібін сынап көруге кеңес береміз. Біз оның сізге сәйкес келетініне {percentage}% сенімдіміз.",
+
+                    // Распознавание лиц
+                    faceDetected: "Бет табылды! Сәлем, пайдаланушы!",
+                    noFaceDetected: "Бет табылмады. Камераны реттеңіз.",
+                    cameraActive: "Камера белсенді. Тану жүріп жатыр...",
+                    cameraInactive: "Камера белсенді емес."
+                }
+            };
+
+            // Инициализация приложения
+            function init() {
+                setupEventListeners();
+                updateUI();
+                generateMathProblem();
+                setupSettings();
+                loadLeaderboard();
+                loadFaceAPI();
+                
+                // Инициализация синтеза речи
+                if ('speechSynthesis' in window) {
+                    synthesis = window.speechSynthesis;
+                    synthesis.onvoiceschanged = loadVoices;
+                    loadVoices();
+                }
+            }
+
+            // Загрузка Face API
+            async function loadFaceAPI() {
+                try {
+                    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+                    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+                    await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+                    await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+                    
+                    // Настройки для детектора лиц
+                    faceDetectionOptions = new faceapi.TinyFaceDetectorOptions({
+                        inputSize: 512,
+                        scoreThreshold: 0.5
+                    });
+                    
+                    console.log('Face API модели загружены');
+                } catch (e) {
+                    console.error('Ошибка загрузки Face API:', e);
+                }
+            }
+
+            // Настройка голосового управления
+            function setupVoiceRecognition() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                
+                if (!SpeechRecognition) {
+                    statusDiv.textContent = currentLanguage === 'ru' ? 
+                        'Ваш браузер не поддерживает голосовое распознавание' : 
+                        'Сіздің шолғышыңыз дауыстық тануды қолдамайды';
+                    return;
+                }
+
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.lang = currentLanguage === 'ru' ? 'ru-RU' : 'kk-KZ';
+                recognition.interimResults = false;
+
+                recognition.onstart = function() {
+                    isListening = true;
+                    voiceBtn.textContent = translations[currentLanguage].statusListening;
+                    document.body.classList.add('listening');
+                    speak(currentLanguage === 'ru' ? 'Голосовое управление активировано' : 'Дауыстық басқару белсендірілді');
+                };
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
+                    
+                    // Если еще не активирован, проверяем ключевое слово
+                    if (!isActivated) {
+                        if (checkActivationPhrase(transcript)) {
+                            isActivated = true;
+                            speak(translations[currentLanguage].activationMessage);
+                            statusDiv.textContent = translations[currentLanguage].statusActivated;
+                        }
+                    } else {
+                        // Если уже активирован, обрабатываем команды напрямую
+                        processVoiceCommand(transcript);
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Ошибка распознавания:', event.error);
+                    stopListening();
+                };
+
+                recognition.onend = function() {
+                    if (isListening && continuousRecognition.checked) {
+                        recognition.start(); // Перезапускаем прослушивание
+                    }
+                };
+            }
+
+            // Проверка фразы активации с различными вариациями
+            function checkActivationPhrase(transcript) {
+                const ruPhrases = ['кайрат', 'койрат', 'хайрат', 'карат', 'айрат', 'активируй', 'включись', 'проснись', 'привет', 'слушай'];
+                const kkPhrases = ['қайрат', 'қойрат', 'хайрат', 'қарат', 'айрат', 'белсендір', 'қосыл', 'тұр', 'сәлем', 'тында'];
+                
+                const phrases = currentLanguage === 'ru' ? ruPhrases : kkPhrases;
+                
+                return phrases.some(phrase => transcript.includes(phrase));
+            }
+
+            // Загрузка доступных голосов
+            function loadVoices() {
+                if (!synthesis) return;
+
+                const voices = synthesis.getVoices();
+                voiceSelect.innerHTML = '<option value="">По умолчанию</option>';
+
+                voices.forEach(voice => {
+                    if (voice.lang.includes(currentLanguage === 'ru' ? 'ru' : 'kk')) {
+                        const option = document.createElement('option');
+                        option.value = voice.name;
+                        option.textContent = `${voice.name} (${voice.lang})`;
+                        voiceSelect.appendChild(option);
+                    }
+                });
+            }
+
+            // Настройка параметров голоса
+            function setupSettings() {
+                // Установка значений по умолчанию
+                speedSlider.value = localStorage.getItem('speechSpeed') || 1;
+                pitchSlider.value = localStorage.getItem('speechPitch') || 1;
+                volumeSlider.value = localStorage.getItem('speechVolume') || 1;
+                continuousRecognition.checked = localStorage.getItem('continuousRecognition') !== 'false';
+
+                // Обновление отображаемых значений
+                speedValue.textContent = parseFloat(speedSlider.value).toFixed(1);
+                pitchValue.textContent = parseFloat(pitchSlider.value).toFixed(1);
+                volumeValue.textContent = parseFloat(volumeSlider.value).toFixed(1);
+
+                // Обработчики изменений
+                speedSlider.addEventListener('input', function() {
+                    speedValue.textContent = parseFloat(this.value).toFixed(1);
+                    localStorage.setItem('speechSpeed', this.value);
+                });
+
+                pitchSlider.addEventListener('input', function() {
+                    pitchValue.textContent = parseFloat(this.value).toFixed(1);
+                    localStorage.setItem('speechPitch', this.value);
+                });
+
+                volumeSlider.addEventListener('input', function() {
+                    volumeValue.textContent = parseFloat(this.value).toFixed(1);
+                    localStorage.setItem('speechVolume', this.value);
+                });
+
+                voiceSelect.addEventListener('change', function() {
+                    localStorage.setItem('selectedVoice', this.value);
+                });
+
+                continuousRecognition.addEventListener('change', function() {
+                    localStorage.setItem('continuousRecognition', this.checked);
+                    if (isListening && this.checked) {
+                        recognition.start();
+                    } else if (isListening && !this.checked) {
+                        recognition.stop();
+                    }
+                });
+
+                // Восстановление выбранного голоса
+                const savedVoice = localStorage.getItem('selectedVoice');
+                if (savedVoice) {
+                    voiceSelect.value = savedVoice;
+                }
+            }
+
+            // Загрузка таблицы рекордов
+            function loadLeaderboard() {
+                // Загрузка рекордов для математики
+                const mathScoresData = JSON.parse(localStorage.getItem('mathScores')) || {};
+                mathScores.innerHTML = '';
+
+                for (const difficulty in mathScoresData) {
+                    if (mathScoresData[difficulty].length > 0) {
+                        const div = document.createElement('div');
+                        div.innerHTML = `<h4>${difficulty}</h4>`;
+                        mathScoresData[difficulty].forEach(score => {
+                            const item = document.createElement('div');
+                            item.className = 'leaderboard-item';
+                            item.textContent = `${score.name}: ${score.score}`;
+                            div.appendChild(item);
+                        });
+                        mathScores.appendChild(div);
+                    }
+                }
+
+                // Загрузка рекордов для моторики
+                const motorScoresData = JSON.parse(localStorage.getItem('motorScores')) || {};
+                motorScores.innerHTML = '';
+
+                for (const difficulty in motorScoresData) {
+                    if (motorScoresData[difficulty].length > 0) {
+                        const div = document.createElement('div');
+                        div.innerHTML = `<h4>${difficulty}</h4>`;
+                        motorScoresData[difficulty].forEach(score => {
+                            const item = document.createElement('div');
+                            item.className = 'leaderboard-item';
+                            item.textContent = `${score.name}: ${score.score}`;
+                            div.appendChild(item);
+                        });
+                        motorScores.appendChild(div);
+                    }
+                }
+            }
+
+            // Сохранение результата в таблицу рекордов
+            function saveScore(game, difficulty, score) {
+                const scoresData = JSON.parse(localStorage.getItem(`${game}Scores`)) || {};
+
+                if (!scoresData[difficulty]) {
+                    scoresData[difficulty] = [];
+                }
+
+                // Запрос имени игрока
+                const playerName = prompt(currentLanguage === 'ru' ? 
+                    'Введите ваше имя для таблицы рекордов:' : 
+                    'Рекордтар кестесі үшін атыңызды енгізіңіз:') || 'Player';
+
+                scoresData[difficulty].push({ name: playerName, score: score });
+
+                // Сортировка по убыванию
+                scoresData[difficulty].sort((a, b) => b.score - a.score);
+
+                // Оставляем только топ-5
+                scoresData[difficulty] = scoresData[difficulty].slice(0, 5);
+
+                localStorage.setItem(`${game}Scores`, JSON.stringify(scoresData));
+                loadLeaderboard();
+            }
+
+            // Обработка голосовых команд
+            function processVoiceCommand(transcript) {
+                statusDiv.textContent = translations[currentLanguage].statusProcessing;
+
+                // Команды навигации
+                if (checkCommand(transcript, ['главное меню', 'главное', 'меню', 'домой', 'на главную', 'выход', 'отмена'])) {
+                    showMainMenu();
+                    speak(currentLanguage === 'ru' ? 'Открываю главное меню' : 'Басты мәзірді ашу');
+                }
+                else if (checkCommand(transcript, ['будущее', 'настроение', 'профессия', 'анализ', 'тест', 'психология'])) {
+                    startGame('future');
+                    speak(currentLanguage === 'ru' ? 'Запускаю игру "Определи свое будущее"' : '"Болашағынды анықта" ойынын іске қосу');
+                }
+                else if (checkCommand(transcript, ['математика', 'математик', 'задача', 'пример', 'счет', 'реши', 'вычисли'])) {
+                    startGame('math');
+                    speak(currentLanguage === 'ru' ? 'Запускаю математический помощник' : 'Математикалық көмекшіні іске қосу');
+                }
+                else if (checkCommand(transcript, ['угадай', 'число', 'числа', 'отгадай', 'загадай', 'угадай число', 'игра число'])) {
+                    startGame('guess');
+                    speak(currentLanguage === 'ru' ? 'Запускаю игру "Угадай число"' : '"Санды тап" ойынын іске қосу');
+                }
+                else if (checkCommand(transcript, ['моторика', 'реакция', 'скорость', 'мишень', 'цель', 'кликай', 'быстро'])) {
+                    startGame('motor');
+                    speak(currentLanguage === 'ru' ? 'Запускаю игру на развитие моторики' : 'Моториканы дамыту ойынын іске қосу');
+                }
+                else if (checkCommand(transcript, ['профессия', 'профессии', 'работа', 'кемек', 'қызмет', 'карьера', 'специальность'])) {
+                    startGame('profession');
+                    speak(currentLanguage === 'ru' ? 'Запускаю игру по профессиям' : 'Кәсіптер бойынша ойынды іске қосу');
+                }
+                else if (checkCommand(transcript, ['настройки', 'опции', 'параметры', 'баптау', 'баптаулар', 'конфигурация'])) {
+                    startGame('settings');
+                    speak(currentLanguage === 'ru' ? 'Открываю настройки' : 'Баптауларды ашу');
+                }
+                else if (checkCommand(transcript, ['камера', 'распознавание', 'лицо', 'бет', 'face', 'фото', 'селфи'])) {
+                    toggleCamera();
+                }
+
+                // Команды для игры "Будущее"
+                else if (currentGame === 'future' && checkCommand(transcript, ['1', '2', '3', 'один', 'два', 'три', 'раз', 'два', 'три'])) {
+                    let number;
+                    if (checkCommand(transcript, ['1', 'один', 'раз'])) number = '1';
+                    else if (checkCommand(transcript, ['2', 'два', 'двое'])) number = '2';
+                    else if (checkCommand(transcript, ['3', 'три', 'трое'])) number = '3';
+
+                    if (number) {
+                        handleFutureNumberSelection(number);
+                    }
+                }
+
+                // Команды для математического помощника
+                else if (currentGame === 'math' && (transcript.match(/\d+/))) {
+                    const numbers = transcript.match(/\d+/g);
+                    if (numbers && numbers.length > 0) {
+                        document.getElementById('math-answer').value = numbers[0];
+                        checkMathAnswer();
+                    }
+                }
+
+                // Команды для игры "Угадай число"
+                else if (currentGame === 'guess' && (transcript.match(/\d+/))) {
+                    const numbers = transcript.match(/\d+/g);
+                    if (numbers && numbers.length > 0) {
+                        document.getElementById('guess-input').value = numbers[0];
+                        checkGuess();
+                    }
+                }
+
+                // Команды для управления
+                else if (checkCommand(transcript, ['стоп', 'остановись', 'выключись', 'хватит', 'достаточно', 'замолчи', 'перестань'])) {
+                    isActivated = false;
+                    speak(translations[currentLanguage].deactivationMessage);
+                    statusDiv.textContent = translations[currentLanguage].statusWaiting;
+                }
+                else if (checkCommand(transcript, ['молчи', 'тихо', 'выключи звук', 'бесшыбын', 'тыныш', 'тишина'])) {
+                    toggleMute();
+                }
+                else if (checkCommand(transcript, ['говори', 'включи звук', 'сөйле', 'дыбыс', 'озвучь'])) {
+                    if (isMuted) toggleMute();
+                }
+
+                // Не распознанная команда
+                else {
+                    speak(currentLanguage === 'ru' ? 'Я не понял команду. Попробуйте еще раз.' : 'Мен пәрменді түсінбедім. Тағы байқап көріңіз.');
+                }
+
+                setTimeout(() => {
+                    if (isActivated) {
+                        statusDiv.textContent = translations[currentLanguage].statusActivated;
+                    } else {
+                        statusDiv.textContent = translations[currentLanguage].statusWaiting;
+                    }
+                }, 2000);
+            }
+
+            // Проверка команды с несколькими вариантами
+            function checkCommand(transcript, commands) {
+                return commands.some(command => transcript.includes(command));
+            }
+
+            // Настройка обработчиков событий
+            function setupEventListeners() {
+                // Переключение языка
+                langRuBtn.addEventListener('click', () => switchLanguage('ru'));
+                langKkBtn.addEventListener('click', () => switchLanguage('kk'));
+
+                // Голосовое управление
+                voiceBtn.addEventListener('click', toggleListening);
+
+                // Кнопка отключения звука
+                muteBtn.addEventListener('click', toggleMute);
+
+                // Кнопка камеры
+                cameraBtn.addEventListener('click', toggleCamera);
+
+                // Иконка настроек
+                settingsIcon.addEventListener('click', () => startGame('settings'));
+
+                // Навигация по меню
+                menuItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        startGame(this.dataset.game);
+                    });
+                });
+
+                // Кнопки возврата
+                backFromFuture.addEventListener('click', showMainMenu);
+                backFromMath.addEventListener('click', showMainMenu);
+                backFromGuess.addEventListener('click', showMainMenu);
+                backFromMotor.addEventListener('click', showMainMenu);
+                backFromProfession.addEventListener('click', showMainMenu);
+                backFromSettings.addEventListener('click', showMainMenu);
+                backFromProgrammer.addEventListener('click', () => showProfessionSelection());
+                backFromEngineer.addEventListener('click', () => showProfessionSelection());
+                backFromDesigner.addEventListener('click', () => showProfessionSelection());
+
+                // Игра "Будущее"
+                const numbers = document.querySelectorAll('.number');
+                numbers.forEach(number => {
+                    number.addEventListener('click', function() {
+                        if (currentGame === 'future') {
+                            handleFutureNumberSelection(this.dataset.number);
+                        }
+                    });
+                });
+
+                // Кнопка "Попробовать профессию"
+                tryProfessionBtn.addEventListener('click', () => {
+                    startGame('profession');
+                });
+
+                // Математический помощник
+                document.getElementById('check-math').addEventListener('click', checkMathAnswer);
+                document.getElementById('voice-math').addEventListener('click', () => {
+                    speak(currentLanguage === 'ru' ? 'Назовите ответ' : 'Жауабыңызды атаңыз');
+                });
+                document.getElementById('new-math').addEventListener('click', generateMathProblem);
+
+                // Выбор сложности для математики
+                const mathDifficultyBtns = document.querySelectorAll('#game-math .difficulty-btn');
+                mathDifficultyBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        mathDifficultyBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        mathDifficulty = this.dataset.difficulty;
+                        generateMathProblem();
+                    });
+                });
+
+                // Игра "Угадай число"
+                document.getElementById('check-guess').addEventListener('click', checkGuess);
+                document.getElementById('voice-guess').addEventListener('click', () => {
+                    speak(currentLanguage === 'ru' ? 'Назовите число' : 'Санды атаңыз');
+                });
+                document.getElementById('new-game').addEventListener('click', startGuessGame);
+
+                // Игра на моторику
+                startMotorBtn.addEventListener('click', startMotorGame);
+                motorGameContainer.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('target')) {
+                        handleTargetClick(e.target);
+                    }
+                });
+
+                // Выбор сложности для моторики
+                const motorDifficultyBtns = document.querySelectorAll('#game-motor .difficulty-btn');
+                motorDifficultyBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        motorDifficultyBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        motorDifficulty = this.dataset.difficulty;
+                    });
+                });
+
+                // Игра по профессиям
+                const professionItems = document.querySelectorAll('#game-profession .menu-item');
+                professionItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        startProfessionGame(this.dataset.profession);
+                    });
+                });
+
+                // Подсказки для программиста
+                hintButtons.forEach((btn, index) => {
+                    btn.addEventListener('click', () => {
+                        useHint(index);
+                    });
+                });
+
+                checkCodeBtn.addEventListener('click', checkCode);
+                resetCodeBtn.addEventListener('click', resetCode);
+
+                // Инженерная игра
+                document.getElementById('check-construction').addEventListener('click', checkConstruction);
+                document.getElementById('reset-construction').addEventListener('click', resetConstruction);
+
+                // Дизайнерская игра
+                document.getElementById('check-design').addEventListener('click', checkDesign);
+                document.getElementById('reset-design').addEventListener('click', resetDesign);
+
+                // Отправка форм по Enter
+                document.getElementById('math-answer').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkMathAnswer();
+                    }
+                });
+
+                document.getElementById('guess-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkGuess();
+                    }
+                });
+            }
+
+            // Переключение языка
+            function switchLanguage(lang) {
+                currentLanguage = lang;
+                langRuBtn.classList.toggle('active', lang === 'ru');
+                langKkBtn.classList.toggle('active', lang === 'kk');
+
+                // Обновляем язык распознавания речи
+                if (recognition) {
+                    recognition.lang = currentLanguage === 'ru' ? 'ru-RU' : 'kk-KZ';
+                    
+                    // Перезапускаем прослушивание с новым языком
+                    if (isListening) {
+                        recognition.stop();
+                        setTimeout(() => recognition.start(), 300);
+                    }
+                }
+
+                // Перезагружаем голоса
+                loadVoices();
+                updateUI();
+            }
+
+            // Переключение режима звука
+            function toggleMute() {
+                isMuted = !isMuted;
+                muteBtn.textContent = isMuted ? 
+                    translations[currentLanguage].unmute : 
+                    translations[currentLanguage].mute;
+                
+                if (isMuted) {
+                    speak(currentLanguage === 'ru' ? 'Звук выключен' : 'Дыбыс өшірілді');
+                } else {
+                    speak(currentLanguage === 'ru' ? 'Звук включен' : 'Дыбыс қосылды');
+                }
+            }
+
+            // Переключение камеры
+            async function toggleCamera() {
+                if (cameraActive) {
+                    // Выключаем камеру
+                    cameraActive = false;
+                    cameraSection.classList.add('hidden');
+                    cameraBtn.textContent = translations[currentLanguage].activateCamera;
+                    
+                    if (faceDetectionInterval) {
+                        clearInterval(faceDetectionInterval);
+                        faceDetectionInterval = null;
+                    }
+                    
+                    if (video.srcObject) {
+                        const tracks = video.srcObject.getTracks();
+                        tracks.forEach(track => track.stop());
+                        video.srcObject = null;
+                    }
+                    
+                    speak(currentLanguage === 'ru' ? 'Камера выключена' : 'Камера өшірілді');
+                } else {
+                    // Включаем камеру
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ 
+                            video: { width: 640, height: 480 } 
+                        });
+                        
+                        video.srcObject = stream;
+                        cameraActive = true;
+                        cameraSection.classList.remove('hidden');
+                        cameraBtn.textContent = translations[currentLanguage].deactivateCamera;
+                        
+                        // Запускаем распознавание лиц
+                        startFaceDetection();
+                        
+                        speak(currentLanguage === 'ru' ? 'Камера включена. Идет распознавание лиц.' : 'Камера қосылды. Бетті тану жүріп жатыр.');
+                    } catch (err) {
+                        console.error('Ошибка доступа к камере:', err);
+                        speak(currentLanguage === 'ru' ? 'Не удалось получить доступ к камере' : 'Камераға қол жеткізу мүмкін болмады');
+                    }
+                }
+            }
+
+            // Запуск распознавания лиц
+            function startFaceDetection() {
+                if (faceDetectionInterval) {
+                    clearInterval(faceDetectionInterval);
+                }
+                
+                faceDetectionInterval = setInterval(async () => {
+                    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                        const detections = await faceapi.detectAllFaces(video, faceDetectionOptions)
+                            .withFaceLandmarks()
+                            .withFaceExpressions();
+                        
+                        // Очищаем canvas
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        
+                        // Рисуем обнаруженные лица
+                        if (detections && detections.length > 0) {
+                            const resizedDetections = faceapi.resizeResults(detections, {
+                                width: video.width,
+                                height: video.height
+                            });
+                            
+                            faceapi.draw.drawDetections(canvas, resizedDetections);
+                            faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+                            faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
+                            
+                            // Озвучиваем обнаружение лица (не чаще чем раз в cooldown)
+                            const now = Date.now();
+                            if (now - lastFaceDetection > faceDetectionCooldown) {
+                                speak(translations[currentLanguage].faceDetected);
+                                lastFaceDetection = now;
+                            }
+                            
+                            faceInfo.textContent = currentLanguage === 'ru' ? 
+                                `Обнаружено лиц: ${detections.length}` : 
+                                `Беттер табылды: ${detections.length}`;
+                        } else {
+                            faceInfo.textContent = translations[currentLanguage].noFaceDetected;
+                        }
+                    }
+                }, 300);
+            }
+
+            // Обновление интерфейса
+            function updateUI() {
+                const t = translations[currentLanguage];
+                mainTitle.textContent = t.mainTitle;
+                
+                if (isActivated) {
+                    statusDiv.textContent = t.statusActivated;
+                } else {
+                    statusDiv.textContent = t.statusWaiting;
+                }
+                
+                voiceBtn.textContent = t.activateVoice;
+                muteBtn.textContent = isMuted ? t.unmute : t.mute;
+                cameraBtn.textContent = cameraActive ? t.deactivateCamera : t.activateCamera;
+
+                // Обновляем тексты меню
+                document.getElementById('game1-title').textContent = t.game1Title;
+                document.getElementById('game1-desc').textContent = t.game1Desc;
+                document.getElementById('game2-title').textContent = t.game2Title;
+                document.getElementById('game2-desc').textContent = t.game2Desc;
+                document.getElementById('game3-title').textContent = t.game3Title;
+                document.getElementById('game3-desc').textContent = t.game3Desc;
+                document.getElementById('game4-title').textContent = t.game4Title;
+                document.getElementById('game4-desc').textContent = t.game4Desc;
+                document.getElementById('game5-title').textContent = t.game5Title;
+                document.getElementById('game5-desc').textContent = t.game5Desc;
+
+                // Обновляем тексты в играх
+                if (document.getElementById('future-title')) {
+                    document.getElementById('future-title').textContent = t.futureTitle;
+                    document.getElementById('back-from-future').textContent = t.backToMenu;
+                    document.getElementById('results-title').textContent = t.resultsTitle;
+                    document.getElementById('try-profession').textContent = t.tryProfession;
+                    updateRoundInfo();
+                }
+
+                if (document.getElementById('math-title')) {
+                    document.getElementById('math-title').textContent = t.mathTitle;
+                    document.getElementById('back-from-math').textContent = t.backToMenu;
+                    document.getElementById('check-math').textContent = t.checkAnswer;
+                    document.getElementById('voice-math').textContent = t.voiceAnswer;
+                    document.getElementById('new-math').textContent = t.newProblem;
+                }
+
+                if (document.getElementById('guess-title')) {
+                    document.getElementById('guess-title').textContent = t.guessTitle;
+                    document.getElementById('back-from-guess').textContent = t.backToMenu;
+                    document.getElementById('check-guess').textContent = t.check;
+                    document.getElementById('voice-guess').textContent = t.sayNumber;
+                    document.getElementById('new-game').textContent = t.newGame;
+                }
+
+                if (document.getElementById('motor-title')) {
+                    document.getElementById('motor-title').textContent = t.motorTitle;
+                    document.getElementById('back-from-motor').textContent = t.backToMenu;
+                    document.getElementById('start-motor').textContent = t.startGame;
+                    scoreElement.textContent = t.score.replace('{score}', motorScore);
+                    timeElement.textContent = t.time.replace('{time}', motorTime);
+                    targetsElement.textContent = t.targets.replace('{targets}', motorTargets);
+                }
+
+                if (document.getElementById('profession-title')) {
+                    document.getElementById('profession-title').textContent = t.professionTitle;
+                    document.getElementById('back-from-profession').textContent = t.backToMenu;
+                    document.getElementById('profession-description').innerHTML = `<p>${t.chooseProfession}</p>`;
+                }
+
+                if (document.getElementById('settings-title')) {
+                    document.getElementById('settings-title').textContent = t.settingsTitle;
+                    document.getElementById('back-from-settings').textContent = t.backToMenu;
+                }
+
+                // Обновление текстов подсказок
+                hintButtons.forEach((btn, index) => {
+                    btn.textContent = t.hint.replace('{number}', index + 1);
+                });
+            }
+
+            // Включение/выключение прослушивания
+            function toggleListening() {
+                if (isListening) {
+                    stopListening();
+                } else {
+                    // Запрашиваем разрешение только один раз
+                    if (!microphonePermissionGranted) {
+                        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                            navigator.mediaDevices.getUserMedia({ audio: true })
+                                .then(function(stream) {
+                                    microphonePermissionGranted = true;
+                                    voiceBtn.classList.add('permission-granted');
+                                    setupVoiceRecognition();
+                                    startListening();
+                                    
+                                    // Останавливаем все треки после получения разрешения
+                                    stream.getTracks().forEach(track => track.stop());
+                                })
+                                .catch(function(err) {
+                                    console.error('Ошибка доступа к микрофону:', err);
+                                    speak(currentLanguage === 'ru' ? 
+                                        'Не удалось получить доступ к микрофону' : 
+                                        'Микрофонға қол жеткізу мүмкін болмады');
+                                });
+                        } else {
+                            speak(currentLanguage === 'ru' ? 
+                                'Ваш браузер не поддерживает доступ к микрофону' : 
+                                'Сіздің браузеріңіз микрофонға қол жеткізуді қолдамайды');
+                        }
+                    } else {
+                        setupVoiceRecognition();
+                        startListening();
+                    }
+                }
+            }
+
+            function startListening() {
+                if (recognition) {
+                    try {
+                        recognition.start();
+                        isListening = true;
+                    } catch (e) {
+                        console.error('Ошибка запуска распознавания:', e);
+                    }
+                }
+            }
+
+            function stopListening() {
+                if (recognition) {
+                    recognition.stop();
+                    isListening = false;
+                    voiceBtn.textContent = translations[currentLanguage].activateVoice;
+                    document.body.classList.remove('listening');
+                    speak(currentLanguage === 'ru' ? 'Голосовое управление отключено' : 'Дауыстық басқару өшірілді');
+                }
+            }
+
+            // Показать главное меню
+            function showMainMenu() {
+                mainMenu.style.display = 'grid';
+                gameFuture.style.display = 'none';
+                gameMath.style.display = 'none';
+                gameGuess.style.display = 'none';
+                gameMotor.style.display = 'none';
+                gameProfession.style.display = 'none';
+                settingsSection.style.display = 'none';
+                currentGame = null;
+
+                // Остановка таймера игры на моторику
+                if (motorTimer) {
+                    clearInterval(motorTimer);
+                    motorTimer = null;
+                }
+
+                // Сброс состояний игр
+                futureNumbers = [];
+                currentRound = 1;
+                document.getElementById('future-results').classList.add('hidden');
+            }
+
+            // Показать выбор профессий
+            function showProfessionSelection() {
+                programmerGame.classList.add('hidden');
+                engineerGame.classList.add('hidden');
+                designerGame.classList.add('hidden');
+                programmerResults.classList.add('hidden');
+                engineerResults.classList.add('hidden');
+                designerResults.classList.add('hidden');
+                document.querySelector('#game-profession .game-container').classList.remove('hidden');
+            }
+
+            // Запуск игры
+            function startGame(game) {
+                mainMenu.style.display = 'none';
+                currentGame = game;
+
+                switch (game) {
+                    case 'future':
+                        gameFuture.style.display = 'block';
+                        futureNumbers = [];
+                        currentRound = 1;
+                        updateRoundInfo();
+                        updateRoundColors();
+                        document.getElementById('future-results').classList.add('hidden');
+                        speak(currentLanguage === 'ru' ? 'Игра "Определи свое будущее" началась. Выберите цифры от одного до трех.' : '"Болашағынды анықта" ойыны басталды. Бірден үшке дейінгі сандарды таңдаңыз.');
+                        break;
+                    case 'math':
+                        gameMath.style.display = 'block';
+                        generateMathProblem();
+                        document.getElementById('math-answer').value = '';
+                        document.getElementById('math-results').classList.add('hidden');
+                        mathLeaderboard.classList.remove('hidden');
+                        speak(currentLanguage === 'ru' ? 'Математический помощник активирован. Решите предложенную задачу.' : 'Математикалық көмекші белсендірілді. Ұсынылған есепті шешіңіз.');
+                        break;
+                    case 'guess':
+                        gameGuess.style.display = 'block';
+                        startGuessGame();
+                        speak(currentLanguage === 'ru' ? 'Игра "Угадай число" началась. Я загадал число от одного до ста.' : '"Санды тап" ойыны басталды. Мен бірден жүзге дейін сан ойладым.');
+                        break;
+                    case 'motor':
+                        gameMotor.style.display = 'block';
+                        motorResults.classList.add('hidden');
+                        motorLeaderboard.classList.remove('hidden');
+                        speak(currentLanguage === 'ru' ? 'Игра на развитие моторики началась. Нажимайте на появляющиеся цели.' : 'Моториканы дамыту ойыны басталды. Пайда болатын нысандарды басыңыз.');
+                        break;
+                    case 'profession':
+                        gameProfession.style.display = 'block';
+                        showProfessionSelection();
+                        speak(currentLanguage === 'ru' ? 'Выберите профессию, чтобы попробовать себя в ней.' : 'Өзіңізді сынап көру үшін кәсіп таңдаңыз.');
+                        break;
+                    case 'settings':
+                        settingsSection.style.display = 'block';
+                        speak(currentLanguage === 'ru' ? 'Настройки голоса открыты.' : 'Дауыс баптаулары ашылды.');
+                        break;
+                }
+            }
+
+            // Обновление цветов для раунда
+            function updateRoundColors() {
+                const numbers = document.querySelectorAll('.number');
+                const colorClass = roundColors[currentRound - 1];
+                
+                numbers.forEach(number => {
+                    // Удаляем все цветовые классы
+                    number.classList.remove('number-1', 'number-2', 'number-3', 'number-4', 'number-5', 'number-6');
+                    // Добавляем нужный класс
+                    number.classList.add(colorClass);
+                });
+            }
+
+            // Обработка выбора числа в игре "Будущее"
+            function handleFutureNumberSelection(number) {
+                if (currentRound <= 6) {
+                    futureNumbers.push(number);
+                    
+                    // Произносим номер
+                    speak(number);
+                    
+                    // Анимация выбора
+                    const selectedElement = document.querySelector(`[data-number="${number}"]`);
+                    selectedElement.classList.add('pulse');
+                    
+                    setTimeout(() => {
+                        selectedElement.classList.remove('pulse');
+                        
+                        if (currentRound < 6) {
+                            currentRound++;
+                            updateRoundInfo();
+                            updateRoundColors();
+                        } else {
+                            // Игра завершена, показываем результаты
+                            showFutureResults();
+                        }
+                    }, 1000);
+                }
+            }
+
+            // Обновление информации о раунде
+            function updateRoundInfo() {
+                document.getElementById('round-info').textContent = 
+                    translations[currentLanguage].roundInfo.replace('{round}', currentRound);
+            }
+
+            // Показ результатов игры "Будущее"
+            function showFutureResults() {
+                const analysis = analyzeSelections(futureNumbers);
+                const t = translations[currentLanguage];
+                
+                document.getElementById('mood-result').textContent = 
+                    t.moodResult.replace('{mood}', analysis.mood);
+                document.getElementById('job-result').textContent = 
+                    t.jobResult.replace('{job}', analysis.job);
+                
+                document.getElementById('future-results').classList.remove('hidden');
+                
+                // Произносим результаты
+                speak(t.moodResult.replace('{mood}', analysis.mood) + '. ' + t.jobResult.replace('{job}', analysis.job));
+            }
+
+            // Анализ выбранных чисел для игры "Будущее"
+            function analyzeSelections(selections) {
+                // Подсчитываем выборы
+                const counts = {
+                    '1': selections.filter(s => s === '1').length,
+                    '2': selections.filter(s => s === '2').length,
+                    '3': selections.filter(s => s === '3').length
+                };
+
+                // Определяем наиболее часто выбираемую цифру
+                const maxCount = Math.max(...Object.values(counts));
+                const mostSelected = Object.keys(counts).find(key => counts[key] === maxCount);
+
+                // Определяем настроение и работу на основе выбора
+                let mood, job;
+
+                switch(mostSelected) {
+                    case '1':
+                        mood = currentLanguage === 'ru' ? 'Аналитическое и логическое' : 'Аналитикалық және логикалық';
+                        job = currentLanguage === 'ru' ? 'Программист, математик, аналитик данных' : 'Программист, математик, деректер аналитигі';
+                        break;
+                    case '2':
+                        mood = currentLanguage === 'ru' ? 'Творческое и вдохновленное' : 'Шығармашылық және шабыттандырылған';
+                        job = currentLanguage === 'ru' ? 'Дизайнер, художник, креативный директор' : 'Дизайнер, суретші, креативті директор';
+                        break;
+                    case '3':
+                        mood = currentLanguage === 'ru' ? 'Коммуникативное и социальное' : 'Коммуникациялық және әлеуметтік';
+                        job = currentLanguage === 'ru' ? 'Менеджер, учитель, психолог' : 'Менеджер, мұғалім, психолог';
+                        break;
+                    default:
+                        mood = currentLanguage === 'ru' ? 'Разностороннее и адаптивное' : 'Алуан түрлі және бейімделгіш';
+                        job = currentLanguage === 'ru' ? 'Универсальный специалист, консультант' : 'Универсал маман, кеңесші';
+                }
+
+                return { mood, job };
+            }
+
+            // Генерация математической задачи
+            function generateMathProblem() {
+                let a, b, op, problem, answer;
+
+                if (mathDifficulty === 'easy') {
+                    a = Math.floor(Math.random() * 10) + 1;
+                    b = Math.floor(Math.random() * 10) + 1;
+                    op = ['+', '-'][Math.floor(Math.random() * 2)];
+                } else if (mathDifficulty === 'medium') {
+                    a = Math.floor(Math.random() * 25) + 1;
+                    b = Math.floor(Math.random() * 25) + 1;
+                    op = ['+', '-', '*'][Math.floor(Math.random() * 3)];
+                } else {
+                    a = Math.floor(Math.random() * 100) + 1;
+                    b = Math.floor(Math.random() * 100) + 1;
+                    const operations = ['+', '-', '*'];
+                    op = operations[Math.floor(Math.random() * operations.length)];
+                }
+
+                switch(op) {
+                    case '+':
+                        problem = `${a} + ${b} = ?`;
+                        answer = a + b;
+                        break;
+                    case '-':
+                        problem = `${a} - ${b} = ?`;
+                        answer = a - b;
+                        break;
+                    case '*':
+                        problem = `${a} × ${b} = ?`;
+                        answer = a * b;
+                        break;
+                }
+
+                document.getElementById('math-problem').textContent = problem;
+                mathAnswer = answer;
+                document.getElementById('math-results').classList.add('hidden');
+                
+                // Озвучиваем задачу
+                speak(currentLanguage === 'ru' ? 
+                    `Сколько будет ${a} ${op === '*' ? 'умножить на' : op} ${b}?` : 
+                    `${a} ${op} ${b} неше болады?`);
+            }
+
+            // Проверка математического ответа
+            function checkMathAnswer() {
+                const userAnswer = parseInt(document.getElementById('math-answer').value);
+                const resultDiv = document.getElementById('math-result');
+
+                if (userAnswer === mathAnswer) {
+                    resultDiv.textContent = currentLanguage === 'ru' ? 
+                        'Правильно! Молодец!' : 'Дұрыс! Жарайсың!';
+                    speak(currentLanguage === 'ru' ? 'Правильно! Молодец!' : 'Дұрыс! Жарайсың!');
+                    
+                    // Увеличиваем счет
+                    mathScore += mathDifficulty === 'easy' ? 1 : mathDifficulty === 'medium' ? 2 : 3;
+                    
+                    // Сохраняем результат, если набрано достаточно очков
+                    if (mathScore >= 10) {
+                        saveScore('math', mathDifficulty, mathScore);
+                        mathScore = 0;
+                    }
+                } else {
+                    resultDiv.textContent = currentLanguage === 'ru' ? 
+                        `Неправильно. Правильный ответ: ${mathAnswer}` : 
+                        `Қате. Дұрыс жауап: ${mathAnswer}`;
+                    speak(currentLanguage === 'ru' ? 
+                        `Неправильно. Правильный ответ: ${mathAnswer}` : 
+                        `Қате. Дұрыс жауап: ${mathAnswer}`);
+                    
+                    // Сбрасываем счет при ошибке
+                    mathScore = 0;
+                }
+
+                document.getElementById('math-results').classList.remove('hidden');
+                
+                // Через 2 секунды генерируем новую задачу
+                setTimeout(() => {
+                    generateMathProblem();
+                    document.getElementById('math-answer').value = '';
+                }, 2000);
+            }
+
+            // Начало игры "Угадай число"
+            function startGuessGame() {
+                guessNumber = Math.floor(Math.random() * 100) + 1;
+                guessAttempts = 0;
+                document.getElementById('guess-input').value = '';
+                
+                const t = translations[currentLanguage];
+                document.getElementById('guess-feedback').textContent = t.guessFeedback;
+                
+                speak(currentLanguage === 'ru' ? 
+                    'Я загадал число от 1 до 100. Попробуй угадать!' : 
+                    'Мен 1-ден 100-ге дейін сан ойладым. Оны тапқың келсе!');
+            }
+
+            // Проверка числа в игре "Угадай число"
+            function checkGuess() {
+                const userGuess = parseInt(document.getElementById('guess-input').value);
+                const feedbackDiv = document.getElementById('guess-feedback');
+                const t = translations[currentLanguage];
+
+                if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                    feedbackDiv.textContent = currentLanguage === 'ru' ? 
+                        'Пожалуйста, введите число от 1 до 100' : 
+                        '1-ден 100-ге дейінгі санды енгізіңіз';
+                    return;
+                }
+
+                guessAttempts++;
+
+                if (userGuess === guessNumber) {
+                    feedbackDiv.textContent = t.guessSuccess
+                        .replace('{number}', guessNumber)
+                        .replace('{attempts}', guessAttempts);
+                    
+                    speak(t.guessSuccess
+                        .replace('{number}', guessNumber)
+                        .replace('{attempts}', guessAttempts));
+                } else if (userGuess < guessNumber) {
+                    feedbackDiv.textContent = t.guessHigher;
+                    speak(t.guessHigher);
+                } else {
+                    feedbackDiv.textContent = t.guessLower;
+                    speak(t.guessLower);
+                }
+            }
+
+            // Начало игры на моторику
+            function startMotorGame() {
+                // Сброс состояния
+                motorGameContainer.innerHTML = '';
+                motorScore = 0;
+                motorTargets = 0;
+                targetsClicked = 0;
+
+                // Установка времени в зависимости от сложности
+                if (motorDifficulty === 'easy') {
+                    motorTime = 30;
+                } else if (motorDifficulty === 'medium') {
+                    motorTime = 45;
+                } else {
+                    motorTime = 60;
+                }
+
+                // Обновление интерфейса
+                const t = translations[currentLanguage];
+                scoreElement.textContent = t.score.replace('{score}', motorScore);
+                timeElement.textContent = t.time.replace('{time}', motorTime);
+                targetsElement.textContent = t.targets.replace('{targets}', motorTargets);
+
+                // Скрытие результатов
+                motorResults.classList.add('hidden');
+
+                // Запуск таймера
+                if (motorTimer) {
+                    clearInterval(motorTimer);
+                }
+
+                motorTimer = setInterval(() => {
+                    motorTime--;
+                    timeElement.textContent = t.time.replace('{time}', motorTime);
+
+                    if (motorTime <= 0) {
+                        endMotorGame();
+                    }
+                }, 1000);
+
+                // Создание первых целей
+                createTarget();
+                createTarget();
+
+                // Активация кнопки
+                startMotorBtn.textContent = currentLanguage === 'ru' ? 'Перезапуск' : 'Қайта бастау';
+                speak(currentLanguage === 'ru' ? 'Игра началась! Кликайте по мишеням!' : 'Ойын басталды! Нысандарды басыңыз!');
+            }
+
+            // Создание цели в игре на моторику
+            function createTarget() {
+                const target = document.createElement('div');
+                target.classList.add('target');
+
+                // Случайное положение
+                const maxX = motorGameContainer.offsetWidth - 60;
+                const maxY = motorGameContainer.offsetHeight - 60;
+                const x = Math.floor(Math.random() * maxX);
+                const y = Math.floor(Math.random() * maxY);
+
+                target.style.left = `${x}px`;
+                target.style.top = `${y}px`;
+
+                // Размер в зависимости от сложности
+                let size;
+                if (motorDifficulty === 'easy') {
+                    size = 60 + Math.floor(Math.random() * 20); // 60-80px
+                } else if (motorDifficulty === 'medium') {
+                    size = 40 + Math.floor(Math.random() * 30); // 40-70px
+                } else {
+                    size = 30 + Math.floor(Math.random() * 30); // 30-60px
+                }
+
+                target.style.width = `${size}px`;
+                target.style.height = `${size}px`;
+
+                // Добавление в контейнер
+                motorGameContainer.appendChild(target);
+
+                // Увеличение счетчика целей
+                motorTargets++;
+                const t = translations[currentLanguage];
+                targetsElement.textContent = t.targets.replace('{targets}', motorTargets);
+
+                // Время жизни цели в зависимости от сложности
+                let lifetime;
+                if (motorDifficulty === 'easy') {
+                    lifetime = 2000 + Math.random() * 2000; // 2-4 секунды
+                } else if (motorDifficulty === 'medium') {
+                    lifetime = 1500 + Math.random() * 1500; // 1.5-3 секунды
+                } else {
+                    lifetime = 1000 + Math.random() * 1000; // 1-2 секунды
+                }
+
+                // Удаление цели через время, если не нажата
+                setTimeout(() => {
+                    if (target.parentNode) {
+                        motorGameContainer.removeChild(target);
+                        // Создание новой цели
+                        if (motorTime > 0) {
+                            createTarget();
+                        }
+                    }
+                }, lifetime);
+            }
+
+            // Обработка клика по цели
+            function handleTargetClick(target) {
+                // Удаление цели
+                motorGameContainer.removeChild(target);
+
+                // Начисление очков (больше очков за меньшие цели и в зависимости от сложности)
+                const size = parseInt(target.style.width);
+                let pointsMultiplier = 1;
+                if (motorDifficulty === 'medium') pointsMultiplier = 1.5;
+                if (motorDifficulty === 'hard') pointsMultiplier = 2;
+
+                const points = Math.floor((100 - size) * pointsMultiplier);
+                motorScore += points;
+                targetsClicked++;
+
+                // Обновление интерфейса
+                const t = translations[currentLanguage];
+                scoreElement.textContent = t.score.replace('{score}', motorScore);
+
+                // Создание новой цели
+                if (motorTime > 0) {
+                    createTarget();
+                }
+            }
+
+            // Завершение игры на моторику
+            function endMotorGame() {
+                // Остановка таймера
+                if (motorTimer) {
+                    clearInterval(motorTimer);
+                    motorTimer = null;
+                }
+
+                // Удаление всех целей
+                motorGameContainer.innerHTML = '';
+
+                // Расчет точности
+                const accuracy = motorTargets > 0 ? Math.floor((targetsClicked / motorTargets) * 100) : 0;
+
+                // Показ результатов
+                const t = translations[currentLanguage];
+                finalScoreElement.textContent = t.finalScore.replace('{score}', motorScore);
+                accuracyElement.textContent = t.accuracy.replace('{accuracy}', accuracy);
+                motorResults.classList.remove('hidden');
+
+                // Сохранение результата
+                saveScore('motor', motorDifficulty, motorScore);
+
+                // Произнесение результатов
+                speak(
+                    currentLanguage === 'ru' ? 
+                    `Игра завершена! Вы набрали ${motorScore} очков с точностью ${accuracy} процентов` : 
+                    `Ойын аяқталды! Сіз ${motorScore} ұпай жинадыңыз, дәлдік ${accuracy} пайыз`
+                );
+
+                // Возврат текста кнопки
+                startMotorBtn.textContent = t.startGame;
+            }
+
+            // Начало игры по профессиям
+            function startProfessionGame(profession) {
+                currentProfession = profession;
+                const t = translations[currentLanguage];
+
+                // Скрываем выбор профессии и показываем игру
+                document.querySelector('#game-profession .game-container').classList.add('hidden');
+                
+                // Сбрасываем подсказки
+                hintsUsed = 0;
+                hintButtons.forEach(btn => {
+                    btn.disabled = false;
+                });
+
+                // Настраиваем игру в зависимости от профессии
+                if (profession === 'programmer') {
+                    programmerGame.classList.remove('hidden');
+                    programmerResults.classList.add('hidden');
+                    
+                    document.getElementById('profession-description').innerHTML = `
+                        <h3>${t.programmer}</h3>
+                        <p>Собери правильную последовательность кода!</p>
+                    `;
+
+                    // Генерируем код для программиста
+                    codePieces = [
+                        'function calculateSum(a, b) {',
+                        '  return a + b;',
+                        '}',
+                        'const result = calculateSum(5, 3);',
+                        'console.log(result);'
+                    ];
+
+                    correctCode = [0, 1, 2, 3, 4];
+
+                    // Перемешиваем элементы кода
+                    const shuffledPieces = [...codePieces].sort(() => Math.random() - 0.5);
+
+                    // Очищаем и заполняем варианты
+                    codeOptions.innerHTML = '';
+                    shuffledPieces.forEach((piece, index) => {
+                        const option = document.createElement('div');
+                        option.className = 'code-option';
+                        option.textContent = piece;
+                        option.dataset.option = codePieces.indexOf(piece);
+                        codeOptions.appendChild(option);
+                    });
+
+                    // Очищаем блок кода
+                    codeBlock.textContent = '// Выберите правильную последовательность кода';
+
+                    speak(currentLanguage === 'ru' ? 
+                        'Игра программиста. Соберите правильную последовательность кода.' : 
+                        'Программист ойыны. Кодтың дұрыс тізбегін жинаңыз.');
+
+                } else if (profession === 'engineer') {
+                    engineerGame.classList.remove('hidden');
+                    engineerResults.classList.add('hidden');
+                    
+                    document.getElementById('profession-description').innerHTML = `
+                        <h3>${t.engineer}</h3>
+                        <p>Собери механизм из предложенных деталей!</p>
+                    `;
+
+                    // Реализация для инженера
+                    setupEngineerGame();
+                    speak(currentLanguage === 'ru' ? 
+                        'Игра инженера. Соберите механизм из деталей.' : 
+                        'Инженер ойыны. Бөлшектерден механизм жинаңыз.');
+
+                } else if (profession === 'designer') {
+                    designerGame.classList.remove('hidden');
+                    designerResults.classList.add('hidden');
+                    
+                    document.getElementById('profession-description').innerHTML = `
+                        <h3>${t.designer}</h3>
+                        <p>Создай красивую цветовую палитру!</p>
+                    `;
+
+                    // Реализация для дизайнера
+                    setupDesignerGame();
+                    speak(currentLanguage === 'ru' ? 
+                        'Игра дизайнера. Создайте гармоничную цветовую палитру.' : 
+                        'Дизайнер ойыны. Үйлесімді түс палитрасын жасаңыз.');
+                }
+
+                // Добавляем обработчики для вариантов кода
+                const codeOptionElements = document.querySelectorAll('.code-option');
+                codeOptionElements.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const selectedOption = parseInt(this.dataset.option);
+                        addCodePiece(selectedOption);
+                    });
+                });
+            }
+
+            // Настройка игры инженера
+            function setupEngineerGame() {
+                const engineerParts = document.querySelectorAll('.engineer-part');
+                const engineerCanvas = document.getElementById('engineer-canvas');
+                
+                engineerParts.forEach(part => {
+                    part.addEventListener('click', function() {
+                        const partType = this.dataset.part;
+                        addPartToCanvas(partType);
+                    });
+                });
+
+                // Очищаем canvas
+                engineerCanvas.innerHTML = '';
+            }
+
+            // Добавление детали в игре инженера
+            function addPartToCanvas(partType) {
+                const engineerCanvas = document.getElementById('engineer-canvas');
+                const part = document.createElement('div');
+                part.className = 'constructed-item';
+                part.innerHTML = document.querySelector(`[data-part="${partType}"]`).innerHTML;
+                part.style.position = 'absolute';
+                part.style.left = `${Math.random() * 80}%`;
+                part.style.top = `${Math.random() * 80}%`;
+                
+                engineerCanvas.appendChild(part);
+                speak(currentLanguage === 'ru' ? 
+                    `Добавлена деталь: ${partType}` : 
+                    `Бөлшек қосылды: ${partType}`);
+            }
+
+            // Проверка конструкции инженера
+            function checkConstruction() {
+                const engineerCanvas = document.getElementById('engineer-canvas');
+                const parts = engineerCanvas.querySelectorAll('.constructed-item');
+                
+                // Простая проверка - если собрано хотя бы 3 детали
+                const score = Math.min(100, Math.floor(parts.length / 5 * 100));
+                professionScores.engineer = score;
+                
+                const t = translations[currentLanguage];
+                engineerScore.textContent = t.moodResult.replace('{mood}', `Ваш результат: ${score}%`);
+                engineerFeedback.textContent = t.professionResult
+                    .replace('{profession}', t.engineer)
+                    .replace('{percentage}', score);
+                
+                engineerResults.classList.remove('hidden');
+                
+                speak(currentLanguage === 'ru' ? 
+                    `Вы набрали ${score} процентов в игре инженера.` : 
+                    `Сіз инженер ойынында ${score} пайыз жинадыңыз.`);
+            }
+
+            // Сброс конструкции инженера
+            function resetConstruction() {
+                const engineerCanvas = document.getElementById('engineer-canvas');
+                engineerCanvas.innerHTML = '';
+                engineerResults.classList.add('hidden');
+                speak(currentLanguage === 'ru' ? 'Конструкция сброшена' : 'Құрылым қалпына келтірілді');
+            }
+
+            // Настройка игры дизайнера
+            function setupDesignerGame() {
+                const colorBoxes = document.querySelectorAll('.color-box');
+                const designElements = document.querySelectorAll('.design-element');
+                
+                colorBoxes.forEach(box => {
+                    box.addEventListener('click', function() {
+                        const color = this.dataset.color;
+                        // Применяем цвет к первому неокрашенному элементу
+                        applyColorToElement(color);
+                        speak(currentLanguage === 'ru' ? 
+                            `Выбран цвет ${color}` : 
+                            `Түс таңдалды ${color}`);
+                    });
+                });
+
+                // Делаем элементы перетаскиваемыми
+                designElements.forEach(element => {
+                    element.setAttribute('draggable', 'true');
+                    
+                    element.addEventListener('dragstart', function(e) {
+                        e.dataTransfer.setData('text/plain', this.textContent);
+                    });
+                });
+
+                const designContainer = document.getElementById('design-container');
+                designContainer.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+
+                designContainer.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    const data = e.dataTransfer.getData('text/plain');
+                    // Логика обработки перетаскивания
+                });
+            }
+
+            // Применение цвета к элементу
+            function applyColorToElement(color) {
+                const designElements = document.querySelectorAll('.design-element');
+                for (let element of designElements) {
+                    if (!element.style.backgroundColor || element.style.backgroundColor === 'rgba(255, 255, 255, 0.2)') {
+                        element.style.backgroundColor = color;
+                        break;
+                    }
+                }
+            }
+
+            // Проверка дизайна
+            function checkDesign() {
+                const designElements = document.querySelectorAll('.design-element');
+                let coloredCount = 0;
+                
+                designElements.forEach(element => {
+                    if (element.style.backgroundColor && element.style.backgroundColor !== 'rgba(255, 255, 255, 0.2)') {
+                        coloredCount++;
+                    }
+                });
+                
+                const score = Math.min(100, Math.floor(coloredCount / designElements.length * 100));
+                professionScores.designer = score;
+                
+                const t = translations[currentLanguage];
+                designerScore.textContent = t.moodResult.replace('{mood}', `Ваш результат: ${score}%`);
+                designerFeedback.textContent = t.professionResult
+                    .replace('{profession}', t.designer)
+                    .replace('{percentage}', score);
+                
+                designerResults.classList.remove('hidden');
+                
+                speak(currentLanguage === 'ru' ? 
+                    `Вы набрали ${score} процентов в игре дизайнера.` : 
+                    `Сіз дизайнер ойынында ${score} пайыз жинадыңыз.`);
+            }
+
+            // Сброс дизайна
+            function resetDesign() {
+                const designElements = document.querySelectorAll('.design-element');
+                designElements.forEach(element => {
+                    element.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                });
+                designerResults.classList.add('hidden');
+                speak(currentLanguage === 'ru' ? 'Дизайн сброшен' : 'Дизайн қалпына келтірілді');
+            }
+
+            // Добавление части кода в игре программиста
+            function addCodePiece(index) {
+                const currentCode = codeBlock.textContent;
+                
+                if (currentCode.includes('// Выберите')) {
+                    codeBlock.textContent = codePieces[index];
+                } else {
+                    codeBlock.textContent += '\n' + codePieces[index];
+                }
+                
+                speak(currentLanguage === 'ru' ? 
+                    `Добавлена строка кода: ${codePieces[index]}` : 
+                    `Код жолы қосылды: ${codePieces[index]}`);
+            }
+
+            // Использование подсказки
+            function useHint(hintIndex) {
+                if (hintsUsed >= maxHints) {
+                    speak(currentLanguage === 'ru' ? 
+                        'Подсказки закончились' : 
+                        'Көрсетулер аяқталды');
+                    return;
+                }
+
+                hintsUsed++;
+                hintButtons[hintIndex].disabled = true;
+
+                // Получаем следующую правильную часть кода
+                const currentCode = codeBlock.textContent.split('\n');
+                const nextCorrectIndex = currentCode.length - (currentCode[0].includes('//') ? 1 : 0);
+                
+                if (nextCorrectIndex < correctCode.length) {
+                    const nextStep = correctCode[nextCorrectIndex];
+                    const hintMessage = translations[currentLanguage].hintMessage
+                        .replace('{step}', codePieces[nextStep]);
+                    
+                    speak(hintMessage);
+                } else {
+                    speak(currentLanguage === 'ru' ? 
+                        'Код уже собран правильно' : 
+                        'Код әлдеқазан дұрыс жиналған');
+                }
+            }
+
+            // Проверка кода в игре программиста
+            function checkCode() {
+                const currentCode = codeBlock.textContent;
+                const lines = currentCode.split('\n').filter(line => line.trim() !== '');
+                
+                let isCorrect = true;
+                for (let i = 0; i < correctCode.length; i++) {
+                    if (lines[i] !== codePieces[correctCode[i]]) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+
+                const score = isCorrect ? 100 : Math.max(0, 100 - (hintsUsed * 20));
+                professionScores.programmer = score;
+                
+                const t = translations[currentLanguage];
+                programmerScore.textContent = t.moodResult.replace('{mood}', `Ваш результат: ${score}%`);
+                
+                if (isCorrect) {
+                    programmerFeedback.textContent = t.professionResult
+                        .replace('{profession}', t.programmer)
+                        .replace('{percentage}', score);
+                    speak(currentLanguage === 'ru' ? 
+                        'Правильно! Отличная работа, программист!' : 
+                        'Дұрыс! Тамаша жұмыс, программист!');
+                } else {
+                    programmerFeedback.textContent = t.failure;
+                    speak(currentLanguage === 'ru' ? 
+                        'Неправильно. Попробуйте еще раз.' : 
+                        'Қате. Тағы байқап көріңіз.');
+                }
+
+                programmerResults.classList.remove('hidden');
+            }
+
+            // Сброс кода в игре программиста
+            function resetCode() {
+                codeBlock.textContent = '// Выберите правильную последовательность кода';
+                hintsUsed = 0;
+                hintButtons.forEach(btn => {
+                    btn.disabled = false;
+                });
+                programmerResults.classList.add('hidden');
+                speak(currentLanguage === 'ru' ? 'Код сброшен' : 'Код қалпына келтірілді');
+            }
+
+            // Функция синтеза речи
+            function speak(text) {
+                if (!synthesis || isMuted) return;
+
+                // Останавливаем любое текущее воспроизведение
+                synthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'ru' ? 'ru-RU' : 'kk-KZ';
+
+                // Настройка параметров из localStorage
+                utterance.rate = parseFloat(localStorage.getItem('speechSpeed') || 1);
+                utterance.pitch = parseFloat(localStorage.getItem('speechPitch') || 1);
+                utterance.volume = parseFloat(localStorage.getItem('speechVolume') || 1);
+
+                // Выбор голоса, если указан
+                const selectedVoice = localStorage.getItem('selectedVoice');
+                if (selectedVoice) {
+                    const voices = synthesis.getVoices();
+                    const voice = voices.find(v => v.name === selectedVoice);
+                    if (voice) {
+                        utterance.voice = voice;
+                    }
+                }
+
+                synthesis.speak(utterance);
+            }
+
+            // Инициализация приложения
+            init();
+        });
+    </script>
+</body>
+</html>
